@@ -21,7 +21,7 @@ dependencies = [
 
 [project.optional-dependencies]
 langgraph = ["langgraph>=1.2.12", "langchain-core>=1.6.5"]
-langchain = ["langchain-core>=1.6.5"]
+langchain = ["langchain-core>=1.6.5", "langchain>=1.4.2"]
 openai_sdk = ["openai-agents>=0.22.3"]
 google_adk = ["google-adk>=2.10.0"]
 semantic_kernel = ["semantic-kernel>=1.44.1", "azure-ai-agents>=1.2.0b3"]
