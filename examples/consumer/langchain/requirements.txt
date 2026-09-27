@@ -1,1 +1,1 @@
-jev-firewall[langchain]==0.1.0
+jev-firewall[langchain]==0.1.1

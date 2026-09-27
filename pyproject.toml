@@ -1,6 +1,6 @@
 [project]
 name = "jev-firewall"
-version = "0.1.0"
+version = "0.1.1"
 description = "Runtime action firewall for AI agents, powered by TypeSafe's Jev System One model."
 readme = "README.md"
 requires-python = ">=3.11"

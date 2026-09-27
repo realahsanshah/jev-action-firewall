@@ -95,3 +95,11 @@ def test_core_does_not_import_frameworks() -> None:
     )
     r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, check=False)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_version_matches_package_metadata() -> None:
+    from importlib.metadata import version
+
+    import jev_firewall
+
+    assert jev_firewall.__version__ == version("jev-firewall")

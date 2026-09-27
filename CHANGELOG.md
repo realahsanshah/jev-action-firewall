@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/realahsanshah/jev-action-firewall/releases/tag/v0.1.1) (2026-09-27)
+
+Documentation and packaging only; no code changes.
+
+- The README uses absolute links, so the docs, examples and license links work on PyPI.
+- Package metadata links the source repository, issues and changelog.
+- CI runs every step on the matrix Python version (3.11, 3.12, 3.13 on Linux and Windows).
+
 ## [0.1.0](https://github.com/realahsanshah/jev-action-firewall/releases/tag/v0.1.0) (2026-09-27)
 
 First release.

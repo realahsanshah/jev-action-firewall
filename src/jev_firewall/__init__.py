@@ -18,7 +18,7 @@ from jev_firewall.jev import FakeJevClient, JevClient, build_jev_client
 from jev_firewall.policy import Policy, RiskThresholds
 from jev_firewall.verdict import Decision, JevAssessment, SeverityTier, ToolCall, Verdict
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "ActionBlocked",
