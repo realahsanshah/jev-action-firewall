@@ -26,6 +26,7 @@ from langgraph.prebuilt import ToolNode
 from langgraph.prebuilt.tool_node import ToolCallRequest
 from langgraph.types import Command, interrupt
 
+from jev_firewall.adapters._common import first_user_text
 from jev_firewall.approval import ApprovalRequest, ApprovalResult
 from jev_firewall.errors import ActionBlocked
 from jev_firewall.guard import Firewall
@@ -38,27 +39,9 @@ FRAMEWORK = "langgraph"
 
 
 def first_human_message(state: Any) -> str | None:
-    """Default `agent_goal`: the first human message in `state["messages"]`.
-
-    Only the user's own words are used, never tool output or retrieved content, so text
-    injected later in the conversation cannot rewrite the goal.
-    """
+    """Default `agent_goal`: the first human message in `state["messages"]`."""
     messages = state.get("messages") if isinstance(state, Mapping) else getattr(state, "messages", None)
-    for m in messages or ():
-        role = m.get("role") or m.get("type") if isinstance(m, Mapping) else getattr(m, "type", None)
-        if role in ("human", "user"):
-            content = m.get("content") if isinstance(m, Mapping) else getattr(m, "content", None)
-            return _text(content)
-    return None
-
-
-def _text(content: Any) -> str | None:
-    if isinstance(content, str):
-        return content
-    if isinstance(content, Sequence):
-        parts = [p.get("text", "") if isinstance(p, Mapping) else str(p) for p in content]
-        return " ".join(p for p in parts if p) or None
-    return None
+    return first_user_text(messages)
 
 
 class JevToolCallWrapper:
