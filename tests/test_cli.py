@@ -43,3 +43,11 @@ def test_audit_summary(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> No
     assert main(["audit", str(log.path)]) == 0
     out = capsys.readouterr().out
     assert "2 decisions: allow=1, hold=0, deny=1" in out
+
+
+def test_init_writes_valid_policy(tmp_path: Path) -> None:
+    dest = tmp_path / "policy.yaml"
+    assert main(["init", str(dest)]) == 0
+    assert main(["check", str(dest)]) == 0
+    assert main(["init", str(dest)]) == 2  # refuses to overwrite
+    assert main(["init", str(dest), "--force"]) == 0

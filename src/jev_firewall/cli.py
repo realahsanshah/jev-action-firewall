@@ -7,6 +7,7 @@ import json
 import sys
 from collections import Counter
 from collections.abc import Sequence
+from importlib import resources
 from pathlib import Path
 
 from jev_firewall.audit import read_audit
@@ -16,6 +17,24 @@ from jev_firewall.jev.fake import FakeJevClient
 from jev_firewall.jev.types import JevClient
 from jev_firewall.policy import Policy, RiskThresholds
 from jev_firewall.verdict import ToolCall
+
+
+def example_policy_text() -> str:
+    """The bundled `policy.example.yaml` (packaged in the wheel; repo root in a source checkout)."""
+    bundled = resources.files("jev_firewall").joinpath("policy.example.yaml")
+    if bundled.is_file():
+        return bundled.read_text(encoding="utf-8")
+    return (Path(__file__).resolve().parents[2] / "policy.example.yaml").read_text(encoding="utf-8")
+
+
+def _init(args: argparse.Namespace) -> int:
+    dest: Path = args.path
+    if dest.exists() and not args.force:
+        print(f"error: {dest} already exists (use --force to overwrite)", file=sys.stderr)
+        return 2
+    dest.write_text(example_policy_text(), encoding="utf-8")
+    print(f"wrote {dest}. Review fail_mode and thresholds, then: jev-firewall check {dest}")
+    return 0
 
 
 def _check(args: argparse.Namespace) -> int:
@@ -67,6 +86,11 @@ def _audit(args: argparse.Namespace) -> int:
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="jev-firewall", description="Runtime action firewall for AI agents.")
     sub = ap.add_subparsers(dest="cmd", required=True)
+
+    i = sub.add_parser("init", help="write the bundled example policy to ./policy.yaml")
+    i.add_argument("path", type=Path, nargs="?", default=Path("policy.yaml"))
+    i.add_argument("--force", action="store_true")
+    i.set_defaults(fn=_init)
 
     c = sub.add_parser("check", help="validate a policy file")
     c.add_argument("policy", type=Path)
