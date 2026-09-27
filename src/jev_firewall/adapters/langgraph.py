@@ -20,11 +20,16 @@ from collections import OrderedDict
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from typing import Any, Literal
 
-from langchain_core.messages import ToolMessage
-from langchain_core.tools import BaseTool
-from langgraph.prebuilt import ToolNode
-from langgraph.prebuilt.tool_node import ToolCallRequest
-from langgraph.types import Command, interrupt
+try:
+    from langchain_core.messages import ToolMessage
+    from langchain_core.tools import BaseTool
+    from langgraph.prebuilt import ToolNode
+    from langgraph.prebuilt.tool_node import ToolCallRequest
+    from langgraph.types import Command, interrupt
+except ImportError as exc:  # pragma: no cover
+    raise ImportError(
+        "jev_firewall.adapters.langgraph needs its framework: pip install 'jev-firewall[langgraph]'"
+    ) from exc
 
 from jev_firewall.adapters._common import first_user_text
 from jev_firewall.approval import ApprovalRequest, ApprovalResult

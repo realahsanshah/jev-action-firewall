@@ -25,9 +25,14 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, Literal
 
-from google.adk.plugins.base_plugin import BasePlugin
-from google.adk.tools.base_tool import BaseTool
-from google.adk.tools.tool_context import ToolContext
+try:
+    from google.adk.plugins.base_plugin import BasePlugin
+    from google.adk.tools.base_tool import BaseTool
+    from google.adk.tools.tool_context import ToolContext
+except ImportError as exc:  # pragma: no cover
+    raise ImportError(
+        "jev_firewall.adapters.google_adk needs its framework: pip install 'jev-firewall[google_adk]'"
+    ) from exc
 
 from jev_firewall.adapters._common import content_text
 from jev_firewall.errors import ActionBlocked

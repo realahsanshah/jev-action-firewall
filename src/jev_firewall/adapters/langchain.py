@@ -24,7 +24,12 @@ from collections.abc import Awaitable, Callable, Mapping
 from typing import Any, Literal
 from uuid import UUID
 
-from langchain_core.callbacks import BaseCallbackHandler
+try:
+    from langchain_core.callbacks import BaseCallbackHandler
+except ImportError as exc:  # pragma: no cover
+    raise ImportError(
+        "jev_firewall.adapters.langchain needs its framework: pip install 'jev-firewall[langchain]'"
+    ) from exc
 
 from jev_firewall.guard import Firewall
 from jev_firewall.verdict import ToolCall

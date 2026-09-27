@@ -24,8 +24,13 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable
 from typing import Literal
 
-from semantic_kernel.filters.functions.function_invocation_context import FunctionInvocationContext
-from semantic_kernel.functions.function_result import FunctionResult
+try:
+    from semantic_kernel.filters.functions.function_invocation_context import FunctionInvocationContext
+    from semantic_kernel.functions.function_result import FunctionResult
+except ImportError as exc:  # pragma: no cover
+    raise ImportError(
+        "jev_firewall.adapters.semantic_kernel needs its framework: pip install 'jev-firewall[semantic_kernel]'"
+    ) from exc
 
 from jev_firewall.adapters._common import first_user_text
 from jev_firewall.errors import ActionBlocked

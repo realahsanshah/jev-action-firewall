@@ -22,15 +22,20 @@ import json
 from collections.abc import Callable, Sequence
 from typing import Any, Literal, TypeVar
 
-from agents import FunctionTool, ToolGuardrailFunctionOutput
-from agents.exceptions import AgentsException
-from agents.tool_context import ToolContext
-from agents.tool_guardrails import (
-    ToolInputGuardrail,
-    ToolInputGuardrailData,
-    ToolOutputGuardrail,
-    ToolOutputGuardrailData,
-)
+try:
+    from agents import FunctionTool, ToolGuardrailFunctionOutput
+    from agents.exceptions import AgentsException
+    from agents.tool_context import ToolContext
+    from agents.tool_guardrails import (
+        ToolInputGuardrail,
+        ToolInputGuardrailData,
+        ToolOutputGuardrail,
+        ToolOutputGuardrailData,
+    )
+except ImportError as exc:  # pragma: no cover
+    raise ImportError(
+        "jev_firewall.adapters.openai_agents needs its framework: pip install 'jev-firewall[openai_sdk]'"
+    ) from exc
 
 from jev_firewall.adapters._common import first_user_text
 from jev_firewall.errors import ActionBlocked
