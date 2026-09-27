@@ -1,5 +1,10 @@
 # jev-firewall
 
+[![PyPI](https://img.shields.io/pypi/v/jev-firewall)](https://pypi.org/project/jev-firewall/)
+[![Python](https://img.shields.io/pypi/pyversions/jev-firewall)](https://pypi.org/project/jev-firewall/)
+[![CI](https://github.com/realahsanshah/jev-action-firewall/actions/workflows/ci.yml/badge.svg)](https://github.com/realahsanshah/jev-action-firewall/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/realahsanshah/jev-action-firewall/blob/master/LICENSE)
+
 **A runtime action firewall for AI agents.** Before an agent's tool call runs, jev-firewall
 asks [Jev](https://docs.typesafe.ai) (TypeSafe's System One decision model) how dangerous it
 is, and returns one of three verdicts:
@@ -94,10 +99,10 @@ They contain no policy logic.
 > pip installs it as is. With uv, also request it directly
 > (`uv add "jev-firewall[semantic_kernel]" "azure-ai-agents>=1.2.0b3"`) or pass `--prerelease=allow`.
 
-Runnable, keyless examples are in [`examples/`](examples/). [`examples/consumer/`](examples/consumer/)
+Runnable, keyless examples are in [`examples/`](https://github.com/realahsanshah/jev-action-firewall/tree/master/examples). [`examples/consumer/`](https://github.com/realahsanshah/jev-action-firewall/tree/master/examples/consumer)
 has one standalone project per framework (`pip install -r requirements.txt && python app.py`)
 that uses the published package exactly as you would. Framework details, including how
-each framework surfaces `ActionBlocked`, are in [docs/adapters.md](docs/adapters.md).
+each framework surfaces `ActionBlocked`, are in [docs/adapters.md](https://github.com/realahsanshah/jev-action-firewall/blob/master/docs/adapters.md).
 
 **`agent_goal`** powers the prompt-injection check. By default each adapter uses the *first
 user message* of the conversation, never tool output or retrieved content, so injected text
@@ -106,7 +111,7 @@ can't rewrite it. You can also pass `goal="..."` or a callable.
 ## Configuration reference
 
 `policy.yaml` is validated strictly: unknown keys are errors, and `fail_mode` and `jev` have
-no defaults. Full reference: [docs/configuration.md](docs/configuration.md).
+no defaults. Full reference: [docs/configuration.md](https://github.com/realahsanshah/jev-action-firewall/blob/master/docs/configuration.md).
 
 ```yaml
 version: 1
@@ -179,7 +184,7 @@ happens.
 
 ## Measured results
 
-Only numbers that were actually measured are listed. Full method and raw JSON: [docs/benchmarks.md](docs/benchmarks.md).
+Only numbers that were actually measured are listed. Full method and raw JSON: [docs/benchmarks.md](https://github.com/realahsanshah/jev-action-firewall/blob/master/docs/benchmarks.md).
 
 | What | Result | Conditions |
 |---|---|---|
@@ -196,7 +201,10 @@ Both measure the live modes automatically when the keys are set.
 
 ## Development
 
+Source: https://github.com/realahsanshah/jev-action-firewall
+
 ```bash
+git clone https://github.com/realahsanshah/jev-action-firewall.git && cd jev-action-firewall
 uv sync --all-extras
 uv run pytest                      # offline: FakeJevClient + mock HTTP transports
 JEV_LIVE_TESTS=1 uv run pytest     # plus live Jev tests (needs TYPESAFE_API_KEY)
@@ -204,7 +212,7 @@ uv run ruff check . && uv run mypy # strict typing
 python examples/langgraph_adversarial_demo.py
 ```
 
-Adding an adapter requires no changes to the core package; see [docs/adapters.md](docs/adapters.md#writing-an-adapter).
+Issues and pull requests are welcome at https://github.com/realahsanshah/jev-action-firewall/issues. Adding an adapter requires no changes to the core package; see [docs/adapters.md](https://github.com/realahsanshah/jev-action-firewall/blob/master/docs/adapters.md#writing-an-adapter).
 
 ## License
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (2026-09-27)
+## [0.1.0](https://github.com/realahsanshah/jev-action-firewall/releases/tag/v0.1.0) (2026-09-27)
 
 First release.
 
@@ -22,4 +22,4 @@ First release.
 - Adversarial LangGraph demo, seeded evaluation suites, and benchmark scripts.
 
 Known gaps: accuracy and end-to-end latency against live Jev haven't been measured for this
-release (see docs/benchmarks.md).
+release (see [docs/benchmarks.md](https://github.com/realahsanshah/jev-action-firewall/blob/master/docs/benchmarks.md)).

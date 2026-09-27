@@ -27,6 +27,13 @@ dependencies = [
     "pyyaml>=6.0.3",
 ]
 
+[project.urls]
+Homepage = "https://github.com/realahsanshah/jev-action-firewall"
+Repository = "https://github.com/realahsanshah/jev-action-firewall"
+Documentation = "https://github.com/realahsanshah/jev-action-firewall/blob/master/README.md"
+Issues = "https://github.com/realahsanshah/jev-action-firewall/issues"
+Changelog = "https://github.com/realahsanshah/jev-action-firewall/blob/master/CHANGELOG.md"
+
 [project.optional-dependencies]
 langgraph = ["langgraph>=1.2.12", "langchain-core>=1.6.5"]
 langchain = ["langchain-core>=1.6.5", "langchain>=1.4.2"]
