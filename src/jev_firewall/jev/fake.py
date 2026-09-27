@@ -36,12 +36,13 @@ _IRREVERSIBLE = re.compile(
     r"push\s+--force|curl[^|]*\|",
     re.IGNORECASE,
 )
-_WORD = re.compile(r"[a-z0-9]{3,}")
-_STOP = {"the", "and", "for", "with", "this", "that", "from", "into", "all", "file", "files", "tool"}
+_HOST = re.compile(r"(?:https?://|@)([a-z0-9.-]+\.[a-z]{2,})", re.IGNORECASE)
 
 
-def _tokens(text: str) -> set[str]:
-    return {w for w in _WORD.findall(text.lower()) if w not in _STOP}
+def _foreign_hosts(action_text: str, goal: str) -> set[str]:
+    """Domains the action reaches (URLs, email recipients) that the goal never mentions."""
+    goal_l = goal.lower()
+    return {h.lower() for h in _HOST.findall(action_text) if h.lower() not in goal_l}
 
 
 def heuristic_responder(state: Mapping[str, Any], questions: Mapping[str, Mapping[str, Any]]) -> JevResponse:
@@ -58,9 +59,8 @@ def heuristic_responder(state: Mapping[str, Any], questions: Mapping[str, Mappin
     full = {k: probs.get(k, 0.0) for k in ("low_risk", "moderate_risk", "high_risk", "critical_danger")}
     nouls = {IRREVERSIBLE: NoulResult(0.9 if _IRREVERSIBLE.search(text) else 0.1)}
     if GOAL_MATCH in questions:
-        goal = _tokens(str(state.get("agent_goal", "")))
-        overlap = goal & _tokens(text)
-        nouls[GOAL_MATCH] = NoulResult(0.85 if overlap else 0.2)
+        foreign = _foreign_hosts(text, str(state.get("agent_goal", "")))
+        nouls[GOAL_MATCH] = NoulResult(0.2 if foreign else 0.8)
     return JevResponse(
         model="fake-heuristic",
         choices={SEVERITY: ChoiceResult(tier, full, confidence=max(full.values()))},

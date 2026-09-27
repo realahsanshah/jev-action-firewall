@@ -29,7 +29,7 @@ defaults:
   # sent to Jev, and cannot be argued away by text inside the arguments.
   hard_patterns:
     - description: recursive delete of root, home, or everything
-      pattern: '\brm\s+(-[a-z]*\s+)*-[a-z]*r[a-z]*\s+(-[a-z]*\s+)*(/|~|\$HOME|\*|/\*|\.\*?)(\s|$|;|&)'
+      pattern: '\brm\s+(-[a-z-]*\s+)*-[a-z]*r[a-z]*\s+(-[a-z-]*\s+)*(/\*?|~/?\*?|\$HOME/?\*?|\*|\.\*?|\./\*)(\s|$|;|&|\|)'
       floor: deny
     - description: rm --no-preserve-root
       pattern: '--no-preserve-root'
