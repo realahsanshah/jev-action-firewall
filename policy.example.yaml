@@ -1,0 +1,94 @@
+# jev-firewall policy. Copy to policy.yaml and adjust.
+version: 1
+
+# REQUIRED. What happens when Jev is unreachable, slow, or returns something malformed:
+#   closed -> DENY the action (safe default for anything with side effects)
+#   open   -> ALLOW the action (hard-pattern floors still apply)
+# Can be overridden per tool below.
+fail_mode: closed
+
+jev:
+  route: direct          # direct | openrouter | vercel | cloudflare
+  timeout_s: 1.0         # total budget per decision, retries included
+  max_retries: 1
+  # model: jev-1.13.0    # per-route default; pin a version once thresholds are tuned
+  # api_key_env: TYPESAFE_API_KEY
+
+defaults:
+  # Severity tier (Jev Choice) -> decision.
+  thresholds:
+    low_risk: allow
+    moderate_risk: allow
+    high_risk: hold
+    critical_danger: deny
+  irreversible_threshold: 0.5   # Noul p(irreversible) at or above this blocks a silent ALLOW
+  goal_match_threshold: 0.5     # Noul p(matches goal) below this forces at least HOLD
+  min_confidence: 0.5           # severity Choice confidence below this forces at least HOLD
+
+  # Deterministic floors on raw arguments, applied to every tool. They run locally, are never
+  # sent to Jev, and cannot be argued away by text inside the arguments.
+  hard_patterns:
+    - description: recursive delete of root, home, or everything
+      pattern: '\brm\s+(-[a-z]*\s+)*-[a-z]*r[a-z]*\s+(-[a-z]*\s+)*(/|~|\$HOME|\*|/\*|\.\*?)(\s|$|;|&)'
+      floor: deny
+    - description: rm --no-preserve-root
+      pattern: '--no-preserve-root'
+      floor: deny
+    - description: filesystem format or raw disk write
+      pattern: '\bmkfs(\.\w+)?\b|\bdd\s+[^\n]*\bof=/dev/(sd|nvme|hd|disk|xvd)'
+      floor: deny
+    - description: fork bomb
+      pattern: ':\(\)\s*\{\s*:\|:&\s*\}\s*;\s*:'
+      floor: deny
+    - description: pipe remote script into a shell
+      pattern: '\b(curl|wget)\b[^\n|]*\|\s*(sudo\s+)?(ba|z|da)?sh\b'
+      floor: deny
+    - description: drop database or schema
+      pattern: '\bdrop\s+(database|schema)\b'
+      floor: deny
+    - description: drop or truncate table
+      pattern: '\b(drop|truncate)\s+table\b'
+      floor: hold
+    - description: unscoped DELETE
+      pattern: '\bdelete\s+from\s+\w+\s*(;|$)'
+      floor: hold
+    - description: force push
+      pattern: '\bgit\s+push\b[^\n]*(--force\b|\s-f\b|--force-with-lease)'
+      floor: hold
+    - description: world-writable permissions on system paths
+      pattern: '\bchmod\s+(-R\s+)?777\s+/'
+      floor: deny
+    - description: reading private keys or password databases
+      pattern: '(\.ssh/id_[a-z0-9]+|/etc/shadow|\.aws/credentials|\.kube/config)'
+      floor: hold
+
+tools:
+  # Exact names beat globs; among globs the most specific wins.
+  "read_*":
+    action: allow          # read-only tools skip Jev entirely
+  "search_*":
+    action: allow
+  "terminal":
+    thresholds:
+      moderate_risk: hold  # be stricter with shell commands
+  "send_email":
+    fail_mode: closed
+  "transfer_*":
+    thresholds:
+      moderate_risk: hold
+      high_risk: deny
+
+approval:
+  channel: cli             # cli | webhook | timeout_deny
+  timeout_s: 300
+  # webhook_url: https://approvals.example.com/jev
+
+audit:
+  path: ./jev-audit.jsonl
+  fsync: false
+
+redaction:
+  max_string_chars: 500
+  max_goal_chars: 200
+  redact_pii: true
+  # extra_key_patterns: ['^x-internal-']
