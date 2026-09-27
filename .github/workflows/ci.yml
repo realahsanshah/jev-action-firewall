@@ -12,11 +12,16 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         python: ["3.11", "3.12", "3.13"]
+    env:
+      # Every uv command must use the matrix interpreter. Without this, `uv run` falls back to
+      # .python-version (3.12), rebuilds the venv, and drops the framework extras.
+      UV_PYTHON: ${{ matrix.python }}
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-      - run: uv sync --all-extras --python ${{ matrix.python }}
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
-      - run: uv run mypy
-      - run: uv run pytest -q
+      - run: uv sync --all-extras --locked
+      - run: uv run --no-sync python --version
+      - run: uv run --no-sync ruff check .
+      - run: uv run --no-sync ruff format --check .
+      - run: uv run --no-sync mypy
+      - run: uv run --no-sync pytest -q
