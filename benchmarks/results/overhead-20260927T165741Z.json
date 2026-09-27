@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-09-27T16:57:38+00:00",
+  "modes": {
+    "no_firewall": {
+      "n": 2000,
+      "mean": 0.004,
+      "p50": 0.004,
+      "p95": 0.005,
+      "p99": 0.005,
+      "max": 0.029
+    },
+    "firewall_local": {
+      "n": 2000,
+      "mean": 1.12,
+      "p50": 1.024,
+      "p95": 1.502,
+      "p99": 1.907,
+      "max": 22.527
+    },
+    "firewall_jev": "not measured: TYPESAFE_API_KEY not set",
+    "llm_guardrail": "not measured: ANTHROPIC_API_KEY not set"
+  },
+  "platform": "win32",
+  "python": "3.12.10"
+}
