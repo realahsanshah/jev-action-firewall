@@ -4,8 +4,8 @@ Every adapter is a thin translation layer: it turns the framework's tool hook in
 `ToolCall(tool_name, tool_args, agent_goal, call_id)` and hands it to the shared `Firewall`:
 
 ```python
-firewall.check(call)          # veto-style hooks: returns the Verdict or raises ActionBlocked
-firewall.guard(call, execute) # wrap-style hooks: check, then run and audit the tool
+firewall.check(call)  # veto-style hooks: returns the Verdict or raises ActionBlocked
+firewall.guard(call, execute)  # wrap-style hooks: check, then run and audit the tool
 # async: acheck / aguard
 ```
 
@@ -58,7 +58,7 @@ from jev_firewall.adapters.langgraph import LangGraphInterruptApproval
 
 firewall = Firewall(PolicyEngine.from_yaml("policy.yaml"), LangGraphInterruptApproval())
 graph = builder.compile(checkpointer=InMemorySaver())
-state = graph.invoke(inputs, config)            # state["__interrupt__"][0].value holds the held call
+state = graph.invoke(inputs, config)  # state["__interrupt__"][0].value holds the held call
 graph.invoke(Command(resume={"approved": True, "resolver": "alice"}), config)
 ```
 

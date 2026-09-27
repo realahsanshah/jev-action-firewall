@@ -70,7 +70,7 @@ Wire it into a LangGraph agent:
 from jev_firewall import Firewall
 from jev_firewall.adapters.langgraph import firewall_tool_node
 
-firewall = Firewall.from_yaml("policy.yaml")                    # engine + approval channel + audit log
+firewall = Firewall.from_yaml("policy.yaml")  # engine + approval channel + audit log
 builder.add_node("tools", firewall_tool_node(tools, firewall))  # replaces ToolNode(tools)
 ```
 

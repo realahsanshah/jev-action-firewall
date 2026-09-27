@@ -1,8 +1,8 @@
 """Standalone LangGraph project using the published package.
 
-    pip install -r requirements.txt
-    export TYPESAFE_API_KEY=...   # optional; without it the offline stand-in is used
-    python app.py
+pip install -r requirements.txt
+export TYPESAFE_API_KEY=...   # optional; without it the offline stand-in is used
+python app.py
 """
 
 import os

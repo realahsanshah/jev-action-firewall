@@ -33,7 +33,9 @@ class ScriptedLlm(BaseLlm):
     async def generate_content_async(
         self, llm_request: LlmRequest, stream: bool = False
     ) -> AsyncGenerator[LlmResponse, None]:
-        results = [p.function_response for c in llm_request.contents for p in (c.parts or []) if p.function_response]
+        results = [
+            p.function_response for c in llm_request.contents for p in (c.parts or []) if p.function_response
+        ]
         if results:
             text = f"tool said: {results[0].response}"
             yield LlmResponse(content=types.Content(role="model", parts=[types.Part(text=text)]))
