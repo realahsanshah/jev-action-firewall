@@ -6,11 +6,19 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
 authors = [{ name = "Ahsan Shah" }]
-keywords = ["ai-agents", "guardrails", "firewall", "jev", "typesafe", "langgraph"]
+keywords = ["ai-agents", "guardrails", "firewall", "jev", "typesafe", "langgraph", "langchain", "openai-agents", "google-adk", "semantic-kernel", "prompt-injection"]
 classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Typing :: Typed",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
 ]
 dependencies = [
     "typesafe-sdk>=0.7.2,<0.8",
@@ -45,6 +53,13 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/jev_firewall"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"policy.example.yaml" = "jev_firewall/policy.example.yaml"
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "examples", "benchmarks", "docs", "scripts", "policy.example.yaml", "README.md", "CHANGELOG.md", "LICENSE"]
+exclude = ["docs/jev-action-firewall-prd-and-trd.md", "docs/PLAN.md", "benchmarks/results/raw"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
