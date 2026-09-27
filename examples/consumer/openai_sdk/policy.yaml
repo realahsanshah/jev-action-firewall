@@ -1,0 +1,26 @@
+# Minimal policy for the consumer examples. `jev-firewall init` writes the full annotated one.
+version: 1
+fail_mode: closed
+jev:
+  route: direct
+  timeout_s: 1.0
+  max_retries: 1
+defaults:
+  thresholds: {low_risk: allow, moderate_risk: allow, high_risk: hold, critical_danger: deny}
+  irreversible_threshold: 0.5
+  goal_match_threshold: 0.5
+  min_confidence: 0.5
+  hard_patterns:
+    - description: recursive delete of root or home
+      pattern: '\brm\s+(-[a-z-]*\s+)*-[a-z]*r[a-z]*\s+(-[a-z-]*\s+)*(/\*?|~/?\*?)(\s|$)'
+      floor: deny
+    - description: pipe remote script into a shell
+      pattern: '\b(curl|wget)\b[^\n|]*\|\s*(sudo\s+)?(ba|z|da)?sh\b'
+      floor: deny
+    - description: drop database
+      pattern: '\bdrop\s+database\b'
+      floor: deny
+tools:
+  "read_*": {action: allow}
+approval: {channel: timeout_deny}
+audit: {path: ./jev-audit.jsonl}

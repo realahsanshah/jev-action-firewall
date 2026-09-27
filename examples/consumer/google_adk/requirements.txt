@@ -1,0 +1,1 @@
+jev-firewall[google_adk]==0.1.0

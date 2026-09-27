@@ -1,0 +1,4 @@
+jev-firewall[semantic_kernel]==0.1.0
+# semantic-kernel >= 1.36 depends on a pre-release of azure-ai-agents. pip accepts it as is;
+# uv only accepts pre-releases that are requested directly, which this line does.
+azure-ai-agents>=1.2.0b3
