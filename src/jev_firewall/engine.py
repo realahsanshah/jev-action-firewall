@@ -83,10 +83,14 @@ class PolicyEngine:
     async def aclose(self) -> None:
         await self._loop.arun(self.jev.aclose())
         self._loop.close()
+        if self.audit is not None:
+            self.audit.close()
 
     def close(self) -> None:
         self._loop.run(self.jev.aclose())
         self._loop.close()
+        if self.audit is not None:
+            self.audit.close()
 
     def __enter__(self) -> Self:
         return self

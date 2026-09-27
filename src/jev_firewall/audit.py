@@ -17,7 +17,7 @@ import threading
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, TextIO
 
 from jev_firewall.verdict import Verdict
 
@@ -29,6 +29,7 @@ class AuditLog:
         self.path = Path(path)
         self.fsync = fsync
         self._lock = threading.Lock()
+        self._fh: TextIO | None = None
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def write(self, event: EventType, call_id: str, payload: Mapping[str, Any]) -> None:
@@ -39,11 +40,20 @@ class AuditLog:
             **payload,
         }
         line = json.dumps(record, ensure_ascii=False, default=str, separators=(",", ":")) + "\n"
-        with self._lock, self.path.open("a", encoding="utf-8") as fh:
-            fh.write(line)
-            fh.flush()
+        with self._lock:
+            # The handle stays open between writes: reopening per record cost ~1 ms on Windows.
+            if self._fh is None or self._fh.closed:
+                self._fh = self.path.open("a", encoding="utf-8")
+            self._fh.write(line)
+            self._fh.flush()
             if self.fsync:
-                os.fsync(fh.fileno())
+                os.fsync(self._fh.fileno())
+
+    def close(self) -> None:
+        with self._lock:
+            if self._fh is not None:
+                self._fh.close()
+                self._fh = None
 
     def verdict(self, v: Verdict) -> None:
         data = v.to_dict()
